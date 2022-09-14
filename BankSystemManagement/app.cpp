@@ -110,10 +110,9 @@ public:
         amount = 0.00;
         lastacc = time(0);
         branch = "none";
-        
     }
 
-    account(string name_, int accno_, int pin_, char type_, double amount_,time_t last_, string branch_)
+    account(string name_, int accno_, int pin_, char type_, double amount_, time_t last_, string branch_)
     {
         this->name = name_;
         this->accno = accno_;
@@ -230,12 +229,12 @@ public:
     }
     void display()
     {
-        cout <<"NAME: "<< name << endl;
-        cout <<"ACCOUNT NO: "<< accno << endl;
-        cout <<"PIN: "<< pin << endl;
-        cout <<"ACCOUNT TYPE: "<< type << endl;
-        cout <<"MONEY STORED: "<< amount << endl;
-        cout <<"BRANCH: "<< branch << endl;
+        cout << "NAME: " << name << endl;
+        cout << "ACCOUNT NO: " << accno << endl;
+        cout << "PIN: " << pin << endl;
+        cout << "ACCOUNT TYPE: " << type << endl;
+        cout << "MONEY STORED: " << amount << endl;
+        cout << "BRANCH: " << branch << endl;
         cout << endl;
     }
 
@@ -245,13 +244,13 @@ public:
 
 class employee : public account
 {
-    int accessed_last;    // account number last accessed 
+    int accessed_last;    // account number last accessed
     time_t accessed_time; // time of the last accessed
     vector<account> accounts;
     string file_name;
 
 public:
-int search_account; // account number to search
+    int search_account; // account number to search
     employee();
     employee(string file)
     {
@@ -265,9 +264,10 @@ int search_account; // account number to search
     }
 
     // void show_account() const;     // function to display all account
-    void display_customer(){
-        cout<<"Enter account no. of holder you wish to search: ";
-        cin>>search_account;
+    void display_customer()
+    {
+        cout << "Enter account no. of holder you wish to search: ";
+        cin >> search_account;
         return;
     }; // checks for specific account
     void last_entry(int id)
@@ -472,7 +472,7 @@ public:
                 transaction obj;
                 obj.deposit();
                 accounts[i].amount += obj.amount;
-                accounts[i].lastacc=time(0);
+                accounts[i].lastacc = time(0);
                 break;
             }
         }
@@ -497,7 +497,7 @@ public:
                     if (sobj.flag2)
                     {
                         accounts[i].amount -= obj.wamount;
-                        accounts[i].lastacc=time(0);
+                        accounts[i].lastacc = time(0);
                         break;
                     }
                     else
@@ -509,13 +509,13 @@ public:
                 else
                 {
                     accounts[i].amount -= obj.wamount;
-                    accounts[i].lastacc=time(0);
+                    accounts[i].lastacc = time(0);
                     break;
                 }
             }
         }
     }
-    //Searchs for account when asked by customer/account holder
+    // Searchs for account when asked by customer/account holder
     bool accfound(int id, int pn)
     {
         for (int i = 0; i < accounts.size(); i++)
@@ -526,21 +526,58 @@ public:
             }
         }
     }
-    //Searches for account when requested by employee
-    void Eaccfound(){
+    // Searches for account when requested by employee
+    void Eaccfound()
+    {
         employee obj("data2.txt");
-        bool flag=true;
+        bool flag = true;
         obj.display_customer();
         for (int i = 0; i < accounts.size(); i++)
         {
             if (obj.search_account == accounts[i].accno)
             {
-                cout<<"Account Found!\n";
-                flag=false;
+                cout << "Account Found!\n";
+                flag = false;
             }
         }
-        if(flag){
-            cout<<"Account Not Found!\n";
+        if (flag)
+        {
+            cout << "Account Not Found!\n";
+        }
+    }
+    // check balance
+    void balance_check(int id)
+    {
+        for (int i = 0; i < accounts.size(); i++)
+        {
+            if (id == accounts[i].accno)
+            {
+                cout << "Account Balance: " << accounts[i].amount << endl;
+                return;
+            }
+        }
+    }
+    // transaction details
+    void parchi()
+    {
+        employee obj("data2.txt");
+        bool flag = true;
+        obj.display_customer();
+        for (int i = 0; i < accounts.size(); i++)
+        {
+            if (obj.search_account == accounts[i].accno)
+            {
+                cout << "Account Found!\n";
+                cout << "Name: " << accounts[i].name << "\n"
+                     << "ID: " << accounts[i].accno << "\n"
+                     << "Balance: " << accounts[i].amount << "\n"
+                     << "Last accessed: " << accounts[i].lastacc << "\n";
+                flag = false;
+            }
+        }
+        if (flag)
+        {
+            cout << "Account Not Found!\n";
         }
     }
     void return_exit()
@@ -566,7 +603,6 @@ public:
             f.write((char *)&accounts[i].amount, sizeof(accounts[i].amount));
             f.write((char *)&accounts[i].lastacc, sizeof(accounts[i].lastacc));
             f.write((char *)accounts[i].branch.c_str(), accounts[i].branch.length() + 1);
-            
         }
         f.close();
     }
@@ -621,7 +657,7 @@ int main()
             cust.add_account();
             cust.store();
             cout << "Account Added Successfully\n";
-            cout<<endl;
+            cout << endl;
             break;
         case 2:
 
@@ -632,7 +668,7 @@ int main()
             int pin;
             cout << "Enter Pin: ";
             cin >> pin;
-            cout<<endl;
+            cout << endl;
             flags = cust.accfound(account_number, pin);
             if (flags)
             {
@@ -640,7 +676,7 @@ int main()
                 emp.store();
 
                 cout << "WELCOME!\n";
-                cout << "what would you like to do?\n1. UPDATE ACCOUNT\n2. DEPOSIT\n3. WITHDRAW\n4. SHOW DETAILS\n5.CHECK INTEREST\n6.DELETE ACCOUNT\n7. EXIT\n";
+                cout << "what would you like to do?\n1. UPDATE ACCOUNT\n2. DEPOSIT\n3. WITHDRAW\n4. SHOW DETAILS\n5.CHECK INTEREST\n6.CHECK BALANCE\n7.DELETE ACCOUNT\n8. EXIT\n";
                 cout << "Your input: ";
                 int option;
                 cin >> option;
@@ -652,40 +688,47 @@ int main()
                     cust.modify(account_number);
                     cust.store();
                     cout << "Account updated!\n";
-                    cout<<endl;
+                    cout << endl;
                     break;
                 case 2:
 
                     cust.deposit(account_number, pin);
                     cust.store();
-                    cout << "Money deposited!\n";cout<<endl;
+                    cout << "Money deposited!\n";
+                    cout << endl;
                     break;
                 case 3:
 
                     cust.withdraw(account_number, pin);
-                    cust.store();cout<<endl;
+                    cust.store();
+                    cout << endl;
                     break;
                 case 4:
 
-                    cust.c_show_account(account_number);cout<<endl;
+                    cust.c_show_account(account_number);
+                    cout << endl;
                     break;
                 case 5:
-
+                    cout<<"FEATURE IN DEVELOPMENT!\n";
                     break;
                 case 6:
+                    cust.balance_check(account_number);
+                    break;
+                case 7:
 
                     cust.delete_account(account_number);
-                    cust.store();cout<<endl;
+                    cust.store();
+                    cout << endl;
+                    break;
+                case 8:
+                    cout << endl;
+                    cust.return_exit();
                     break;
                 }
-            case 7:
-                cout<<endl;
-                cust.return_exit();
-                break;
             }
             break;
         case 3:
-        cout<<endl;
+            cout << endl;
             cout << "LOGIN AS ADMIN (password: 123)\n";
             int a_pin;
             cout << "Enter Pin: ";
@@ -694,7 +737,7 @@ int main()
             {
 
                 cout << "WELCOME!\n";
-                cout << "what would you like to do?\n1. DISPLAY ALL ACCOUNTS\n2. LAST ENTRY\n3. SEARCH USER\n4. EXIT\n";
+                cout << "what would you like to do?\n1. DISPLAY ALL ACCOUNTS\n2. LAST ENTRY\n3. SEARCH USER\n4. TRANSACTION DETAIL\n5. EXIT\n";
                 cout << "Your input: ";
                 int option;
                 cin >> option;
@@ -711,7 +754,9 @@ int main()
                     cust.Eaccfound();
                     break;
                 case 4:
-
+                    cust.parchi();
+                    break;
+                case 5:
                     cust.return_exit();
                     break;
                 default:
@@ -721,11 +766,11 @@ int main()
 
             break;
         case 4:
-        cout<<endl;
+            cout << endl;
             exit = true;
             break;
         case 5:
-            
+
             break;
         default:
 
