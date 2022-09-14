@@ -245,12 +245,13 @@ public:
 
 class employee : public account
 {
-    int accessed_last;    // account number last accessed
+    int accessed_last;    // account number last accessed 
     time_t accessed_time; // time of the last accessed
     vector<account> accounts;
     string file_name;
 
 public:
+int search_account; // account number to search
     employee();
     employee(string file)
     {
@@ -263,8 +264,12 @@ public:
         accounts.push_back(obj);
     }
 
-    void show_account() const;     // function to display all account
-    void display_customer() const; // checks for specific account
+    // void show_account() const;     // function to display all account
+    void display_customer(){
+        cout<<"Enter account no. of holder you wish to search: ";
+        cin>>search_account;
+        return;
+    }; // checks for specific account
     void last_entry(int id)
     {
         accounts[0].accno = id;
@@ -467,6 +472,7 @@ public:
                 transaction obj;
                 obj.deposit();
                 accounts[i].amount += obj.amount;
+                accounts[i].lastacc=time(0);
                 break;
             }
         }
@@ -491,6 +497,7 @@ public:
                     if (sobj.flag2)
                     {
                         accounts[i].amount -= obj.wamount;
+                        accounts[i].lastacc=time(0);
                         break;
                     }
                     else
@@ -502,11 +509,13 @@ public:
                 else
                 {
                     accounts[i].amount -= obj.wamount;
+                    accounts[i].lastacc=time(0);
                     break;
                 }
             }
         }
     }
+    //Searchs for account when asked by customer/account holder
     bool accfound(int id, int pn)
     {
         for (int i = 0; i < accounts.size(); i++)
@@ -515,6 +524,23 @@ public:
             {
                 return true;
             }
+        }
+    }
+    //Searches for account when requested by employee
+    void Eaccfound(){
+        employee obj("data2.txt");
+        bool flag=true;
+        obj.display_customer();
+        for (int i = 0; i < accounts.size(); i++)
+        {
+            if (obj.search_account == accounts[i].accno)
+            {
+                cout<<"Account Found!\n";
+                flag=false;
+            }
+        }
+        if(flag){
+            cout<<"Account Not Found!\n";
         }
     }
     void return_exit()
@@ -668,7 +694,7 @@ int main()
             {
 
                 cout << "WELCOME!\n";
-                cout << "what would you like to do?\n1. DISPLAY ALL ACCOUNTS\n2. LAST ENTRY\n3. EXIT\n";
+                cout << "what would you like to do?\n1. DISPLAY ALL ACCOUNTS\n2. LAST ENTRY\n3. SEARCH USER\n4. EXIT\n";
                 cout << "Your input: ";
                 int option;
                 cin >> option;
@@ -682,6 +708,9 @@ int main()
                     emp.return_entry();
                     break;
                 case 3:
+                    cust.Eaccfound();
+                    break;
+                case 4:
 
                     cust.return_exit();
                     break;
